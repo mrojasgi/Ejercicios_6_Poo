@@ -1,30 +1,76 @@
-package file;
+public class NominaApp {
 
-import javax.swing.*;
-import logic.Empresa;
-import model.Empleado;
-import java.io.*;
+    // =============================
+    // CLASE EMPLEADO
+    // =============================
+    class Empleado {
+        private String nombre;
+        private double salarioBase;
+        private int horasExtras;
+        private double valorHoraExtra;
 
-public class ArchivoNomina {
-    public static void guardar(Empresa empresa) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        public Empleado(String nombre, double salarioBase, int horasExtras, double valorHoraExtra) {
+            this.nombre = nombre;
+            this.salarioBase = salarioBase;
+            this.horasExtras = horasExtras;
+            this.valorHoraExtra = valorHoraExtra;
+        }
 
-        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-            File carpeta = chooser.getSelectedFile();
-            File archivo = new File(carpeta, "Nomina.txt");
+        public double calcularSalarioFinal() {
+            return salarioBase + (horasExtras * valorHoraExtra);
+        }
 
-            try (PrintWriter pw = new PrintWriter(new FileWriter(archivo))) {
-                for (Empleado e : empresa.getEmpleados()) {
-                    pw.println(e.toString());
-                }
-                pw.println("\nTOTAL NÓMINA = " + empresa.calcularTotalNomina());
-                JOptionPane.showMessageDialog(null, "Archivo guardado en:\n" + archivo.getPath());
+        public String getNombre() { return nombre; }
+        public double getSalarioBase() { return salarioBase; }
+        public int getHorasExtras() { return horasExtras; }
+        public double getValorHoraExtra() { return valorHoraExtra; }
+    }
 
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Error guardando archivo");
+    // =============================
+    // CLASE NOMINA
+    // =============================
+    class Nomina {
+        private java.util.ArrayList<Empleado> empleados;
+
+        public Nomina() {
+            empleados = new java.util.ArrayList<>();
+        }
+
+        public void agregarEmpleado(Empleado e) {
+            empleados.add(e);
+        }
+
+        public void imprimirNomina() {
+            System.out.println("====== NÓMINA DE EMPLEADOS ======");
+            for (Empleado e : empleados) {
+                System.out.println("Empleado: " + e.getNombre());
+                System.out.println("Salario base: " + e.getSalarioBase());
+                System.out.println("Horas extra: " + e.getHorasExtras());
+                System.out.println("Valor hora extra: " + e.getValorHoraExtra());
+                System.out.println("Salario final: " + e.calcularSalarioFinal());
+                System.out.println("---------------------------------");
             }
         }
     }
-}
 
+    // =============================
+    // MÉTODO MAIN
+    // =============================
+    public static void main(String[] args) {
+        NominaApp app = new NominaApp();
+        Nomina nomina = app.new Nomina();
+
+        // Crear empleados de ejemplo
+        Empleado e1 = app.new Empleado("Carlos Gómez", 2000000, 10, 15000);
+        Empleado e2 = app.new Empleado("Ana Torres", 1800000, 5, 15000);
+        Empleado e3 = app.new Empleado("Luis Pérez", 2500000, 12, 15000);
+
+        // Agregar empleados
+        nomina.agregarEmpleado(e1);
+        nomina.agregarEmpleado(e2);
+        nomina.agregarEmpleado(e3);
+
+        // Imprimir nómina
+        nomina.imprimirNomina();
+    }
+}
