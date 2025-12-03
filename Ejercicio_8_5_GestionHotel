@@ -1,1 +1,205 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class HotelApp {
+
+    // =====================================================
+    // CLASE HUESPED
+    // =====================================================
+    class Huesped {
+        private String nombre;
+        private String apellidos;
+        private String documento;
+        private String fechaIngreso;
+        private String fechaSalida;
+
+        public Huesped(String nombre, String apellidos, String documento, String fechaIngreso) {
+            this.nombre = nombre;
+            this.apellidos = apellidos;
+            this.documento = documento;
+            this.fechaIngreso = fechaIngreso;
+        }
+
+        public void setFechaSalida(String fechaSalida) { this.fechaSalida = fechaSalida; }
+        public String getFechaIngreso() { return fechaIngreso; }
+    }
+
+    // =====================================================
+    // CLASE HABITACIÓN
+    // =====================================================
+    class Habitacion {
+        private int numero;
+        private boolean disponible;
+        private double precioDia;
+        private Huesped huesped;
+
+        public Habitacion(int numero, double precioDia) {
+            this.numero = numero;
+            this.precioDia = precioDia;
+            this.disponible = true;
+        }
+
+        public boolean isDisponible() { return disponible; }
+        public Huesped getHuesped() { return huesped; }
+        public double getPrecioDia() { return precioDia; }
+
+        public void ocupar(Huesped h) {
+            this.huesped = h;
+            this.disponible = false;
+        }
+
+        public void desocupar() {
+            this.huesped = null;
+            this.disponible = true;
+        }
+    }
+
+    // =====================================================
+    // CLASE HOTEL
+    // =====================================================
+    class Hotel {
+        private Habitacion[] habitaciones = new Habitacion[10];
+
+        public Hotel() {
+            for (int i = 0; i < 10; i++) {
+                habitaciones[i] = new Habitacion(
+                        i + 1,
+                        (i < 5 ? 120000 : 160000)
+                );
+            }
+        }
+
+        public Habitacion getHabitacion(int num) {
+            return habitaciones[num - 1];
+        }
+    }
+
+    // =====================================================
+    // VENTANA PRINCIPAL
+    // =====================================================
+    class VentanaPrincipal extends JFrame implements ActionListener {
+
+        JButton consultarBtn, salidaBtn;
+        Hotel hotel;
+
+        public VentanaPrincipal(Hotel hotel) {
+            this.hotel = hotel;
+
+            setTitle("Hotel - Menú Principal");
+            setSize(400, 200);
+            setLayout(new GridLayout(2, 1));
+
+            consultarBtn = new JButton("Consultar habitaciones");
+            salidaBtn = new JButton("Salida de huésped");
+
+            consultarBtn.addActionListener(this);
+            salidaBtn.addActionListener(this);
+
+            add(consultarBtn);
+            add(salidaBtn);
+
+            setVisible(true);
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == consultarBtn) new VentanaHabitaciones(hotel);
+            if (e.getSource() == salidaBtn) new VentanaSalida(hotel);
+        }
+    }
+
+    // =====================================================
+    // VENTANA HABITACIONES
+    // =====================================================
+    class VentanaHabitaciones extends JFrame {
+
+        public VentanaHabitaciones(Hotel hotel) {
+            setTitle("Estado de habitaciones");
+            setSize(400, 400);
+            setLayout(new GridLayout(10, 1));
+
+            for (int i = 1; i <= 10; i++) {
+                Habitacion h = hotel.getHabitacion(i);
+                JLabel label = new JLabel(
+                        "Habitación " + i + " - " +
+                        (h.isDisponible() ? "Disponible" : "Ocupada")
+                );
+                add(label);
+            }
+
+            setVisible(true);
+        }
+    }
+
+    // =====================================================
+    // VENTANA SALIDA (CHECKOUT)
+    // =====================================================
+    class VentanaSalida extends JFrame implements ActionListener {
+
+        JTextField numHabField, fechaSalidaField;
+        JButton calcularBtn;
+        Hotel hotel;
+
+        public VentanaSalida(Hotel hotel) {
+            this.hotel = hotel;
+
+            setTitle("Salida de huésped");
+            setSize(300, 200);
+            setLayout(new GridLayout(3, 2));
+
+            add(new JLabel("Número habitación:"));
+            numHabField = new JTextField();
+            add(numHabField);
+
+            add(new JLabel("Fecha salida:"));
+            fechaSalidaField = new JTextField();
+            add(fechaSalidaField);
+
+            calcularBtn = new JButton("Calcular");
+            calcularBtn.addActionListener(this);
+            add(calcularBtn);
+
+            setVisible(true);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                int num = Integer.parseInt(numHabField.getText());
+                Habitacion h = hotel.getHabitacion(num);
+
+                if (h.isDisponible()) {
+                    JOptionPane.showMessageDialog(this, "La habitación está libre.");
+                    return;
+                }
+
+                Huesped huesp = h.getHuesped();
+                huesp.setFechaSalida(fechaSalidaField.getText());
+
+                int dias = 2; // simulado
+
+                double total = dias * h.getPrecioDia();
+
+                JOptionPane.showMessageDialog(this,
+                        "Total a pagar: $" + total);
+
+                h.desocupar();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error en los datos");
+            }
+        }
+    }
+
+    // =====================================================
+    // MAIN
+    // =====================================================
+    public static void main(String[] args) {
+        HotelApp app = new HotelApp();
+        Hotel hotel = app.new Hotel();
+        new VentanaPrincipal(hotel);
+    }
+}
 
