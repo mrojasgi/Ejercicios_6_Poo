@@ -1,1 +1,30 @@
+package file;
+
+import javax.swing.*;
+import logic.Empresa;
+import model.Empleado;
+import java.io.*;
+
+public class ArchivoNomina {
+    public static void guardar(Empresa empresa) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File carpeta = chooser.getSelectedFile();
+            File archivo = new File(carpeta, "Nomina.txt");
+
+            try (PrintWriter pw = new PrintWriter(new FileWriter(archivo))) {
+                for (Empleado e : empresa.getEmpleados()) {
+                    pw.println(e.toString());
+                }
+                pw.println("\nTOTAL NÓMINA = " + empresa.calcularTotalNomina());
+                JOptionPane.showMessageDialog(null, "Archivo guardado en:\n" + archivo.getPath());
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error guardando archivo");
+            }
+        }
+    }
+}
 
