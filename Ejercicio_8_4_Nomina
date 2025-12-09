@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * ============================================
  *               MODELO EMPLEADO
+ * ============================================
  */
 class Empleado {
     private String nombre;
@@ -37,7 +39,9 @@ class Empleado {
 }
 
 /**
+ * ============================================
  *                MODELO EMPRESA
+ * ============================================
  */
 class Empresa {
     private List<Empleado> empleados = new ArrayList<>();
@@ -60,7 +64,9 @@ class Empresa {
 }
 
 /**
+ * ============================================
  *         CLASE PARA GUARDAR LA NÓMINA
+ * ============================================
  */
 class ArchivoNomina {
 
@@ -93,7 +99,9 @@ class ArchivoNomina {
 }
 
 /**
+ * ============================================
  *                 PROGRAMA MAIN
+ * ============================================
  */
 public class NominaApp {
 
