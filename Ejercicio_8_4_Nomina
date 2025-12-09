@@ -24,7 +24,7 @@ class Empleado {
     }
 
     public double calcularSalarioFinal() {
-        return salarioBase + (horasExtras * valorHoraExtra);
+        return salarioBase + horasExtras * valorHoraExtra;
     }
 
     @Override
@@ -75,7 +75,6 @@ class ArchivoNomina {
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-
             File carpeta = chooser.getSelectedFile();
             File archivo = new File(carpeta, "Nomina.txt");
 
